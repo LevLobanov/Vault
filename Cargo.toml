@@ -1,0 +1,15 @@
+[package]
+name = "Vault"
+version = "0.1.0"
+edition = "2021"
+description = "Hashicorp vault written in Rust and Python (REST API). Aimed to have better audit system."
+authors = ["Lev Lobanov <lev.lobanov.g@yandex.ru>", "Vadim Evseyev"]
+readme = "README.md"
+licence = "MIT"
+
+[lib]
+name = "vault"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = "0.22.0"
