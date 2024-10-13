@@ -1,14 +1,35 @@
 use pyo3::prelude::*;
 
-/// Formats the sum of two numbers as string.
-#[pyfunction]
-fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
-    Ok((a + b).to_string())
-}
-
 /// A Python module implemented in Rust.
 #[pymodule]
-fn vault(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
-    Ok(())
+mod vault {
+    use super::*;
+
+    /// Authorization module, use it's functions to authorize user and receive token
+    #[pymodule]
+    mod auth {
+        use super::*;
+
+        /// This function authorizes user and returns token, if ok.
+        #[pyfunction]
+        #[pyo3(signature = (username, password, token_ttl=None))]
+        fn auth_userpass(username: &str, password: &str, token_ttl: Option<usize>) -> PyResult<String> {
+            Ok(format!("Token for user: {} with password: {} and requested ttl: {}", username, password, token_ttl.unwrap_or(0)))
+        }
+    }
+
+    #[pymodule]
+    mod secrets_engine {
+        use super::*;
+
+        #[pymodule]
+        mod kv {
+            use super::*;
+
+            #[pyfunction]
+            fn get_secret(token: &str, path: &str) -> PyResult<String> {
+                Ok(format!("Your secret: 🍆, from path: {} and token used: {}", path, token))
+            }
+        }
+    }
 }
