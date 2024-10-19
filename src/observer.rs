@@ -13,6 +13,10 @@ use base64::prelude::*;
 /// You can't read secret without him granting you ability to do it!
 pub struct Observer {
     master_key: Key<Aes256Gcm>,
+    shamir_t: usize,
+    shamir_n: usize,
+    progress: usize,
+    selaed: bool,
 }
 
 impl Observer {
@@ -20,6 +24,10 @@ impl Observer {
         let key: &Key<Aes256Gcm> = Key::<Aes256Gcm>::from_slice(&master_key);
         Observer {
             master_key: *key,
+            shamir_t: 3,
+            shamir_n: 5,
+            progress: 0,
+            selaed: false,
         }
     }
 
@@ -88,6 +96,10 @@ impl Observer {
                 Ok(Secret::KVSecret(kv_secret))
             },
         }
+    }
+
+    pub fn get_vault_status(&self) -> (bool, usize, usize, usize) {
+        (self.selaed, self.shamir_t, self.shamir_n, self.progress)
     }
 }
 
